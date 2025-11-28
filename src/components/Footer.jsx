@@ -497,7 +497,7 @@ function Footer() {
               ].map((brand) => (
                 <li key={brand}>
                   <Link
-                    to={`/phones/${brand.toLowerCase()}`}
+                    to={`/category/${brand.toLowerCase()}`}
                     className="hover:text-blue-400 transition"
                   >
                     {brand}

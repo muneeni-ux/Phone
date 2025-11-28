@@ -1,277 +1,292 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useCart } from "../context/CartContext";
-import { Trash2, Plus, Minus } from "lucide-react";
-// import { useNavigate } from "react-router-dom";
+import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft, CheckCircle, CreditCard, Smartphone, DollarSign, Truck, MapPin, X } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom"; // Assumed routing for product details
+import CheckoutModal from "../components/modal/CheckoutModal";
 
+// Utility to format price
+const formatPrice = (price) => `Ksh ${price.toLocaleString()}`;
+
+// Mock Constants
+const phoneNumber = "254738380692"; // TechHub WhatsApp Number
+const MOCK_SHIPPING_FEE = 500;
+
+// --------------------- Toast Component (Reused) ---------------------
+const Toast = ({ message, type = 'info', onClose }) => {
+  useEffect(() => {
+    if (!message) return;
+    const timer = setTimeout(() => onClose(), 3000);
+    return () => clearTimeout(timer);
+  }, [message, onClose]);
+
+  if (!message) return null;
+
+  const baseStyle = "fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 p-4 rounded-xl shadow-2xl flex items-center gap-3 transition-opacity duration-300 font-semibold";
+  let icon, colorStyle;
+
+  switch (type) {
+    case 'success':
+      icon = <CheckCircle size={20} />;
+      colorStyle = "bg-green-600 text-white";
+      break;
+    case 'error':
+      icon = <Trash2 size={20} />;
+      colorStyle = "bg-red-600 text-white";
+      break;
+    default:
+      icon = <DollarSign size={20} />;
+      colorStyle = "bg-blue-600 text-white";
+  }
+
+  return (
+    <div
+      className={`${baseStyle} ${colorStyle}`}
+      style={{ animation: "fadeInOut 3s ease-in-out forwards" }}
+    >
+      {icon}
+      <span>{message}</span>
+    </div>
+  );
+};
+
+// --------------------- CHECKOUT MODAL COMPONENT ---------------------
+
+
+
+// --------------------- Main Cart Component ---------------------
 function Cart() {
-  const phoneNumber = "254724835785"; // Replace with your WhatsApp number
   const { cartItems, removeFromCart, updateQuantity } = useCart();
-  // const navigate = useNavigate();
+  
+  // State for Toast & Modal
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("info");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
+  
+  const grandTotal = subtotal > 0 ? subtotal + MOCK_SHIPPING_FEE : 0;
 
-  // const handleCheckout = () => {
-  //   if (cartItems.length === 0) {
-  //     alert("Your cart is empty!");
-  //   } else {
-  //     navigate("/checkout");
-  //   }
-  // };
+  // Function to show toast message
+  const showToast = useCallback((message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+  }, []);
 
-  let message = "Hi, I'm interested in the following products:\n\n";
-  if (cartItems.length > 0) {
-    message += cartItems
-      .map(
-        (item, index) =>
-          `${index + 1}. *${item.name}*\n📦 Qty: ${
-            item.quantity
-          }\n💰 Price: Ksh ${item.price.toFixed(2)}\n🖼️ Image: ${item.image}\n`
-      )
-      .join("\n");
-    message += `\n\n🧾 *Subtotal:* Ksh ${subtotal.toFixed(
-      2
-    )}\n\nPlease provide more details.`;
-  } else {
-    message =
-      "Hi, I would like to inquire about some products, but my cart seems empty.";
-  }
+  // Handlers wrapped to include toast
+  const handleRemoveFromCart = (id, name) => {
+    removeFromCart(id);
+    showToast(`${name} removed from cart.`, 'error');
+  };
+
+  const handleUpdateQuantity = (id, change, name) => {
+    if (cartItems.find(item => item.id === id).quantity + change >= 1) {
+      updateQuantity(id, change);
+      showToast(`${name} quantity ${change > 0 ? 'increased' : 'decreased'}.`, 'success');
+    }
+  };
+
+  // WhatsApp message formatting (Inquiry / Quick Order)
+  const message = cartItems.length > 0 
+    ? `Hello TechHub, I'm interested in the following products (Quick Order):\n\n${cartItems.map((item, i) => `${i + 1}. *${item.name}* (Qty: ${item.quantity})\nUnit Price: ${formatPrice(item.price)}\n`).join("\n")}\n*Total Estimate: ${formatPrice(subtotal)}*\n\nPlease confirm availability and local delivery/pickup.`
+    : "Hello TechHub, I would like to make an inquiry about your products.";
 
   const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
     message
   )}`;
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-10 mt-14 grid grid-cols-1 lg:grid-cols-3 gap-10 bg-white">
+    <div className="min-h-screen bg-gray-50 pt-10 pb-20 font-sans mb-[-8rem]">
+      
+      <style>{`
+          @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, 20px); }
+            10% { opacity: 1; transform: translate(-50%, 0); }
+            90% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, 20px); }
+          }
+      `}</style>
+      <Toast message={toastMessage} type={toastType} onClose={() => setToastMessage("")} />
+
       <Helmet>
-        <title>Your Cart | Pak Fashions</title>
-        <meta
-          name="description"
-          content="Review your selected fashion items in the cart. Adjust quantities, remove items, or proceed to checkout or WhatsApp booking with ease."
-        />
-        <meta
-          name="keywords"
-          content="fashion cart, shopping cart, pak fashions cart, buy clothes online Kenya, fashion checkout"
-        />
-        <meta name="author" content="Pak Fashions" />
-        <meta name="robots" content="index, follow" />
-
-        {/* Open Graph for Facebook, LinkedIn, etc. */}
-        <meta property="og:title" content="Your Cart | Pak Fashions" />
-        <meta
-          property="og:description"
-          content="Explore the items you've added to your Pak Fashions cart. Continue shopping or place your order via WhatsApp."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://pakfashions.co.ke/cart" />
-        <meta
-          property="og:image"
-          content="https://pakfashions.co.ke/pak-circle.png"
-        />
-
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Your Cart | Pak Fashions" />
-        <meta
-          name="twitter:description"
-          content="Review your cart items and place your fashion order from Pak Fashions."
-        />
-        <meta
-          name="twitter:image"
-          content="https://pakfashions.co.ke/pak-circle.png"
-        />
+        <title>{`Shopping Cart (${cartItems.length}) | TechHub`}</title>
       </Helmet>
 
-      {/* Cart Items */}
-      <section className="lg:col-span-2 space-y-6">
-        <h2 className="text-4xl font-extrabold text-black border-b pb-4">
-          Your Cart 🛒
-        </h2>
+      <div className="max-w-7xl mx-auto px-4 md:px-6 grid grid-cols-1 lg:grid-cols-3 gap-10">
+        
+        {/* ------------------ LEFT COLUMN: CART ITEMS ------------------ */}
+        <section className="lg:col-span-2 space-y-8">
+          
+          <h1 className="text-4xl font-extrabold text-gray-900 border-b-4 border-blue-600 pb-4 mb-4 inline-block">
+            Your Shopping Cart 🛒
+          </h1>
 
-        {cartItems.length === 0 ? (
-          <p className="text-gray-500 text-lg">Your cart is currently empty.</p>
-        ) : (
-          cartItems.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center bg-white border border-gray-200 rounded-3xl shadow-sm hover:shadow-lg transition-all p-4 gap-4"
-            >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-28 h-28 object-cover rounded-xl border"
-              />
-              <div className="flex flex-col justify-between flex-grow">
-                <div>
-                  <h3 className="text-xl font-bold text-black">{item.name}</h3>
-                  <p className="text-yellow-600 font-semibold mt-1">
-                    Ksh {item.price.toFixed(2)}
-                  </p>
-                  <p className="text-gray-500 mt-2 text-sm line-clamp-2">
-                    {item.description}
-                  </p>
-                </div>
+          <div className="space-y-6">
+            {cartItems.length === 0 ? (
+              <div className="text-center py-20 bg-white rounded-2xl shadow-xl border border-gray-200">
+                <ShoppingBag size={64} className="text-blue-500 mx-auto mb-4" />
+                <p className="text-gray-700 text-2xl font-semibold mb-4">Your cart is empty!</p>
+                <Link
+                  to="/"
+                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-200"
+                >
+                  <ArrowLeft size={18} /> Continue Shopping
+                </Link>
+              </div>
+            ) : (
+              cartItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex flex-col sm:flex-row items-center bg-white border border-gray-100 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 gap-4 sm:gap-6"
+                >
+                  {/* Image & Link */}
+                  <Link to={`/product/${item.id}`} className="flex-shrink-0">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full sm:w-28 h-40 sm:h-28 object-contain rounded-xl border border-gray-100 bg-gray-50 hover:shadow-md transition"
+                    />
+                  </Link>
 
-                <div className="flex items-center justify-between mt-4">
-                  {/* Quantity Controls */}
-                  <div className="flex items-center border rounded-full overflow-hidden bg-yellow-50">
-                    <button
-                      onClick={() => updateQuantity(item.id, -1)}
-                      disabled={item.quantity <= 1}
-                      className="px-3 py-1 text-yellow-700 hover:bg-yellow-200 disabled:opacity-50 disabled:cursor-not-allowed transition"
-                    >
-                      <Minus size={16} />
-                    </button>
-                    <span className="px-4 font-medium text-black">
-                      {item.quantity}
-                    </span>
-                    <button
-                      onClick={() => updateQuantity(item.id, 1)}
-                      className="px-3 py-1 text-yellow-700 hover:bg-yellow-200 transition"
-                    >
-                      <Plus size={16} />
-                    </button>
+                  <div className="flex flex-col justify-between flex-grow w-full">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        {/* Product Name & Link */}
+                        <h3 className="text-xl font-bold text-gray-900 hover:text-blue-600 transition">
+                          <Link to={`/product/${item.id}`}>{item.name}</Link>
+                        </h3>
+                        <p className="text-sm font-medium text-gray-500 capitalize">
+                          {item.brand || "Tech Brand"}
+                        </p>
+                      </div>
+                      
+                      <div className="text-right flex-shrink-0">
+                          <p className="text-2xl font-extrabold text-blue-600">
+                              {formatPrice(item.price * item.quantity)}
+                          </p>
+                          <p className="text-sm text-gray-500 mt-1">
+                              Unit: {formatPrice(item.price)}
+                          </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-4 border-t border-gray-100 pt-4">
+                      {/* Quantity Controls */}
+                      <div className="flex items-center border border-gray-300 rounded-full overflow-hidden bg-white shadow-sm">
+                        <button
+                          onClick={() => handleUpdateQuantity(item.id, -1, item.name)}
+                          disabled={item.quantity <= 1}
+                          className="p-3 text-blue-600 hover:bg-blue-100 disabled:opacity-50 transition"
+                          title="Decrease quantity"
+                        >
+                          <Minus size={16} />
+                        </button>
+                        <span className="px-4 font-extrabold text-lg text-gray-800">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => handleUpdateQuantity(item.id, 1, item.name)}
+                          className="p-3 text-blue-600 hover:bg-blue-100 transition"
+                          title="Increase quantity"
+                        >
+                          <Plus size={16} />
+                        </button>
+                      </div>
+
+                      {/* Delete */}
+                      <button
+                        onClick={() => handleRemoveFromCart(item.id, item.name)}
+                        title="Remove item"
+                        className="p-3 rounded-full text-red-500 hover:bg-red-50 hover:text-red-700 transition duration-200 border border-transparent hover:border-red-300"
+                      >
+                        <Trash2 size={22} />
+                      </button>
+                    </div>
                   </div>
-
-                  {/* Remove Button */}
-                  <button
-                    onClick={() => removeFromCart(item.id)}
-                    className="text-red-500 hover:text-red-700 transition"
-                    title="Remove from Cart"
-                  >
-                    <Trash2 size={22} />
-                  </button>
                 </div>
+              ))
+            )}
+          </div>
+        </section>
+
+        {/* ------------------ RIGHT COLUMN: ORDER SUMMARY ------------------ */}
+        <aside className="lg:sticky lg:top-10">
+          <div className="bg-white border border-gray-200 rounded-3xl shadow-2xl p-6 lg:p-8">
+            <h3 className="text-3xl font-extrabold text-gray-900 mb-6 border-b-2 border-gray-200 pb-3">
+              Order Summary
+            </h3>
+
+            {/* Price Details */}
+            <div className="space-y-4 mb-6">
+              <div className="flex justify-between text-lg text-gray-700">
+                <span>Subtotal ({cartItems.length} items)</span>
+                <span className="font-semibold">{formatPrice(subtotal)}</span>
+              </div>
+              <div className="flex justify-between text-lg text-gray-700 border-b border-dashed pb-3">
+                <span className="flex items-center gap-2"><Truck size={18}/> Estimated Shipping</span>
+                <span className="font-semibold text-green-600">{cartItems.length > 0 ? formatPrice(MOCK_SHIPPING_FEE) : formatPrice(0)}</span>
               </div>
             </div>
-          ))
-        )}
-      </section>
 
-      {/* Order Summary */}
-      <aside className="bg-black text-white shadow-xl rounded-3xl p-6 h-fit sticky top-24">
-        <h3 className="text-3xl font-bold mb-6 border-b border-yellow-400 pb-3">
-          Order Summary
-        </h3>
+            {/* Grand Total */}
+            <div className="flex justify-between text-2xl font-extrabold pt-4">
+              <span>Grand Total</span>
+              <span className="text-blue-600">{formatPrice(grandTotal)}</span>
+            </div>
 
-        <div className="flex justify-between text-lg font-semibold text-yellow-400 mb-8">
-          <span>Subtotal</span>
-          <span>Ksh {subtotal.toFixed(2)}</span>
-        </div>
-
-        <a
-          href={whatsappURL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-full block text-center px-8 py-3 bg-yellow-500 hover:bg-yellow-600 text-black text-lg font-semibold rounded-full shadow-md transition-all flex items-center justify-center gap-2"
-        >
-          <FaWhatsapp className="text-2xl" />
-          Buy/Book via WhatsApp
-        </a>
-      </aside>
+            {/* Primary Checkout CTA (Opens Modal) */}
+            <button
+                onClick={() => {
+                    if (cartItems.length > 0) setIsModalOpen(true);
+                    else showToast("Your cart is empty. Add items to checkout.", 'error');
+                }}
+                disabled={cartItems.length === 0}
+                className={`w-full block text-center mt-8 py-3 text-xl font-bold rounded-xl shadow-lg transition duration-300 transform 
+                ${cartItems.length > 0
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/30 hover:scale-[1.02]' 
+                    : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                }`}
+            >
+                Proceed to Checkout
+            </button>
+            
+            {/* WhatsApp Option (Alternative) */}
+            <div className="mt-6 pt-6 border-t border-gray-100">
+                <p className="text-sm text-gray-500 text-center mb-3">
+                    Prefer ordering manually or local pickup?
+                </p>
+                <a
+                  href={whatsappURL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-full block text-center py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-md transition duration-200 flex items-center justify-center gap-3 ${
+                      cartItems.length === 0 ? "opacity-60 cursor-not-allowed" : ""
+                  }`}
+                  onClick={(e) => cartItems.length === 0 && e.preventDefault()}
+                >
+                  <FaWhatsapp className="text-xl" />
+                  Quick Order / Inquiry via WhatsApp
+                </a>
+            </div>
+            
+          </div>
+        </aside>
+      </div>
+      
+      {/* ------------------ RENDER MODAL ------------------ */}
+      {isModalOpen && cartItems.length > 0 && (
+          <CheckoutModal 
+              grandTotal={grandTotal} 
+              closeModal={() => setIsModalOpen(false)} 
+              showToast={showToast} 
+          />
+      )}
     </div>
   );
 }
 
 export default Cart;
-
-// import React from 'react';
-// import { useCart } from '../context/CartContext';
-// import { Trash2, Plus, Minus } from 'lucide-react';
-// import { useNavigate } from 'react-router-dom';  // Import useNavigate
-
-// function Cart() {
-//   const { cartItems, removeFromCart, updateQuantity } = useCart();
-//   const navigate = useNavigate();  // Initialize useNavigate
-
-//   // Calculate subtotal
-//   const subtotal = cartItems.reduce(
-//     (total, item) => total + item.price * item.quantity,
-//     0
-//   );
-
-//   // Checkout function
-//   const handleCheckout = () => {
-//     if (cartItems.length === 0) {
-//       alert('Your cart is empty!');
-//     } else {
-//       // Navigate to checkout page (adjust path if needed)
-//       navigate('/checkout');
-//     }
-//   };
-
-//   return (
-//     <div className="max-w-4xl mx-auto p-6 mt-16 bg-white shadow-lg rounded-lg">
-//       <h2 className="text-2xl font-bold mb-4 text-blue-800">Your Cart 🛒</h2>
-
-//       {cartItems.length === 0 ? (
-//         <p className="text-gray-500">Your cart is empty.</p>
-//       ) : (
-//         <div className="space-y-6">
-//           {cartItems.map((item) => (
-//             <div
-//               key={item.id}
-//               className="flex items-center justify-between border p-4 rounded-md shadow-sm bg-white"
-//             >
-//               <div className="flex items-center space-x-4">
-//                 <img
-//                   src={item.image}
-//                   alt={item.name}
-//                   className="w-20 h-20 object-cover rounded"
-//                 />
-//                 <div>
-//                   <h3 className="text-lg font-semibold text-blue-900">{item.name}</h3>
-//                   <p className="text-sm text-gray-600">${item.price.toFixed(2)}</p>
-//                   {/* Product Description */}
-//                   <p className="text-sm text-gray-500 mt-1">{item.description}</p>
-
-//                   <div className="flex items-center mt-2 space-x-2">
-//                     <button
-//                       onClick={() => updateQuantity(item.id, -1)}
-//                       className="p-1 bg-gray-200 rounded hover:bg-gray-300"
-//                     >
-//                       <Minus size={16} />
-//                     </button>
-//                     <span className="px-2">{item.quantity}</span>
-//                     <button
-//                       onClick={() => updateQuantity(item.id, 1)}
-//                       className="p-1 bg-gray-200 rounded hover:bg-gray-300"
-//                     >
-//                       <Plus size={16} />
-//                     </button>
-//                   </div>
-//                 </div>
-//               </div>
-//               <button
-//                 onClick={() => removeFromCart(item.id)}
-//                 className="text-red-600 hover:text-red-800"
-//               >
-//                 <Trash2 size={20} />
-//               </button>
-//             </div>
-//           ))}
-
-//           {/* Cart Summary and Checkout */}
-//           <div className="flex justify-between items-center pt-6 border-t">
-//             <p className="text-lg font-bold text-blue-800">
-//               Subtotal: ksh {subtotal.toFixed(2)}
-//             </p>
-//             <button
-//               onClick={handleCheckout}  // Trigger checkout
-//               className={`px-6 py-2 rounded ${cartItems.length === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-700 text-white hover:bg-blue-800'}`}
-//               disabled={cartItems.length === 0}
-//             >
-//               Checkout
-//             </button>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default Cart;
