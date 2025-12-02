@@ -50,8 +50,8 @@ router.post("/pay", async (req, res) => {
         PartyB: DARAJA_SHORTCODE,
         PhoneNumber: phone,
         CallBackURL: DARAJA_CALLBACK_URL,
-        AccountReference: "Beadwork Checkout",
-        TransactionDesc: "Payment for beadwork items",
+        AccountReference: "TechHub Checkout",
+        TransactionDesc: "Payment for TechHub items",
       },
       {
         headers: {

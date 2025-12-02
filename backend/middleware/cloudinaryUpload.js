@@ -21,7 +21,7 @@ const cloudinary = require("../config/cloudinary");
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "Pak_Fashions",
+    folder: "Green_World",
     // Accept any format, but convert to webp (better compression)
     format: async () => "webp",  
     allowed_formats: ["jpg", "png", "jpeg", "webp", "gif", "bmp", "tiff", "svg", "heif", "heic"],

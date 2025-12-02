@@ -16,6 +16,8 @@ import {
 import AOS from "aos";
 import "aos/dist/aos.css";
 
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+
 function Contact() {
   // Initialize AOS only once on component mount
   useEffect(() => {
@@ -55,21 +57,48 @@ function Contact() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setStatus(null);
 
-    // Simulate form submission latency
-    setTimeout(() => {
-      console.log("Form Submitted", formData);
-      setIsSubmitting(false);
+    try {
+      const res = await fetch(`${SERVER_URL}/api/contact/send-mail`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-      setStatus("success");
+      const data = await res.json();
+
+      if (!res.ok) {
+        setStatus({
+          type: "error",
+          message: data.error || "Failed to send message.",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Success
+      setStatus({
+        type: "success",
+        message: "Message sent successfully! We will respond within 24 hours.",
+      });
       setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: "Network error. Please check your connection and try again.",
+      });
+    }
 
-      setTimeout(() => setStatus(null), 5000);
-    }, 2000);
+    setIsSubmitting(false);
+
+    // Auto-hide status after 5 seconds
+    setTimeout(() => setStatus(null), 5000);
   };
 
   // --- Reusable Contact Card Component ---
@@ -257,10 +286,24 @@ function Contact() {
 
               {/* Submission Status */}
               <div className="md:col-span-2">
-                {status === "success" && (
-                  <p className="text-lg font-semibold text-green-700 bg-green-100 border border-green-300 p-3 rounded-xl flex items-center gap-2">
-                    <CheckCircle size={20} className="text-green-500" /> Message
-                    sent successfully! We will respond within 24 hours.
+                {status && (
+                  <p
+                    className={`text-lg font-semibold p-3 rounded-xl flex items-center gap-2 
+    ${
+      status.type === "success"
+        ? "text-green-700 bg-green-100 border border-green-300"
+        : "text-red-700 bg-red-100 border border-red-300"
+    }`}
+                  >
+                    <CheckCircle
+                      size={20}
+                      className={
+                        status.type === "success"
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }
+                    />
+                    {status.message}
                   </p>
                 )}
               </div>

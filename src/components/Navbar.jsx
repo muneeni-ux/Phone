@@ -17,6 +17,7 @@ import {
   Mail,
   MapPin,
   HomeIcon,
+  Watch,
 } from "lucide-react";
 import SearchModal from "./SearchModal";
 import { useCart } from "../context/CartContext";
@@ -146,6 +147,18 @@ function Navbar() {
                   icon={<Cable size={16} />}
                   close={() => setDropdownOpen(false)}
                 />
+                <DropdownLink
+                  to="/category/cases"
+                  label="Phone Cases"
+                  icon={<Smartphone size={16} />}
+                  close={() => setDropdownOpen(false)}
+                />
+                <DropdownLink
+                  to="/category/wearables"
+                  label="Wearables"
+                  icon={<Watch size={16} />}
+                  close={() => setDropdownOpen(false)}
+                />
               </div>
             </div>
 
@@ -181,7 +194,7 @@ function Navbar() {
       {/* Mobile Sidebar */}
       {/* FIX: Adjusted z-index to z-50 (highest). Added backdrop/overlay. */}
       <aside
-        className={`fixed top-0 left-0 h-[3/4] w-72 bg-white shadow-xl z-50 transition-transform duration-300 ${
+        className={`fixed top-0 left-0 h-[3/4] w-72 bg-white shadow-xl z-50 transition-transform duration-300 rounded-b-2xl ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
