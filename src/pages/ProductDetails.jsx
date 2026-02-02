@@ -422,7 +422,7 @@ const ProductDetails = () => {
                     className="border rounded-xl p-4 bg-white shadow-md hover:shadow-lg transition flex gap-4 items-center"
                   >
                     <img
-                      src={r.gallery?.[0] || "/placeholder.png"}
+                      src={r.gallery?.[0] || r.image || "/placeholder.png"}
                       alt={r.name}
                       className="w-20 h-20 object-contain rounded-lg border"
                     />
