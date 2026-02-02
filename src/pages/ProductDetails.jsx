@@ -242,7 +242,7 @@ const ProductDetails = () => {
               <div className="relative border rounded-xl overflow-hidden shadow-lg bg-white">
                 <img
                   src={
-                    product.gallery?.[currentImageIndex] ||
+                    product.gallery?.[currentImageIndex] || product.image ||
                     "/placeholder.png"
                   }
                   alt={product.name}
