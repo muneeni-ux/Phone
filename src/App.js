@@ -40,7 +40,6 @@ import BlogPost from "./pages/BlogPost";
 import Categories from "./pages/Categories";
 import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
-import { Toaster } from 'react-hot-toast';
 import VisitorTracker from "./components/VisitorTracker";
 import ProtectedRoute from "./components/Admin/ProtectedRoute";
 import AdminDashboard from "./components/Admin/AdminDashboard";

@@ -108,9 +108,12 @@ function Footer() {
 
           {/* ---------- BRAND ---------- */}
           <div>
-            <h3 className="text-3xl font-extrabold text-blue-600 tracking-wide mb-3">
+            <div className="flex mb-3 items-center gap-1">
+            <img src="./techHub.png" alt="techHub" className="h-20" />
+            <h3 className="text-2xl font-extrabold text-blue-600 tracking-wide ">
               TECH<span className="text-white">HUB</span>
             </h3>
+            </div>
             <p className="text-gray-400 text-sm max-w-xs">
               Latest smartphones, accessories & tech gadgets delivered across Kenya.
             </p>

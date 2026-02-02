@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  FaEnvelope,
-  FaPhoneAlt,
-  FaMapMarkerAlt,
   FaWhatsapp,
 } from "react-icons/fa";
 import {
@@ -36,12 +33,12 @@ function Contact() {
   const focusRing = "focus:border-blue-500";
 
   const contactInfo = {
-    email: "info@beadworksboutique.com",
-    phone: "+1 (800) 555-1234",
-    whatsapp: "1234567890",
+    email: "info@techHub.co.ke",
+    phone: "+254 721 555-123",
+    whatsapp: "254738380692",
     location: "456 Artisan Way, Craft City, NY 10010",
   };
-  const whatsappURL = `https://wa.me/${contactInfo.whatsapp}?text=Hello!%20I%20have%20a%20question%20about%20Beadworks%20Boutique.`;
+  const whatsappURL = `https://wa.me/${contactInfo.whatsapp}?text=Hello!%20I%20have%20a%20question%20about%20techHub.`;
 
   // --- State Management ---
   const [formData, setFormData] = useState({
@@ -188,7 +185,7 @@ function Contact() {
             </h2>
             <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
               <p className="text-lg font-semibold text-gray-800 mb-2">
-                Beadworks HQ
+                TechHub HQ
               </p>
               <p className="text-gray-600 mb-4">{contactInfo.location}</p>
               <div className="w-full h-64 overflow-hidden rounded-xl shadow-lg border border-gray-200">

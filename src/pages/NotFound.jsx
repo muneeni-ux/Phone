@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Terminal, ArrowLeft, Home, FileWarning, Search } from 'lucide-react';
+import { ArrowLeft, Home, FileWarning} from 'lucide-react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 

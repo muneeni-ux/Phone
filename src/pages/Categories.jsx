@@ -254,9 +254,9 @@ const deviceTypeOptions = {
   Oppo: ["Smartphones", "Smartwatches"],
   Samsung: ["Smartphones", "Laptops", "Smartwatches"],
 };
-const seriesOptions = ["Ultra", "Pro", "Max", "FE", "Lite", "Classic"];
-const storageOptions = ["64GB", "128GB", "256GB", "512GB", "1TB"];
-const ramOptions = ["2GB", "3GB", "4GB", "6GB", "8GB", "12GB", "16GB"];
+// const seriesOptions = ["Ultra", "Pro", "Max", "FE", "Lite", "Classic"];
+// const storageOptions = ["64GB", "128GB", "256GB", "512GB", "1TB"];
+// const ramOptions = ["2GB", "3GB", "4GB", "6GB", "8GB", "12GB", "16GB"];
 
 // --------------------- Toast Component ---------------------
 const Toast = ({ message, onClose }) => {

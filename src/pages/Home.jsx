@@ -5,9 +5,6 @@ import "aos/dist/aos.css";
 import {
   ArrowRight,
   Truck,
-  Sparkles,
-  Users,
-  Gift,
   ShoppingCart,
   ChevronLeft,
   ChevronRight,
@@ -34,7 +31,14 @@ const fontLink = (
 
 // Helper function for a simple countdown (frontend-only)
 const calculateTimeLeft = () => {
-  const targetDate = new Date("2025-12-6T00:00:00").getTime(); // Example date: Black Friday
+  const targetDate = (() => {
+  const d = new Date();
+  const days = (5 - d.getDay() + 7) % 7 || 7;
+  d.setDate(d.getDate() + days);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+})();
+
   const now = new Date().getTime();
   const difference = targetDate > now ? targetDate - now : 0;
 

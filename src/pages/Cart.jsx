@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useCart } from "../context/CartContext";
 import {
   Trash2,
@@ -6,13 +6,7 @@ import {
   Minus,
   ShoppingBag,
   ArrowLeft,
-  CheckCircle,
-  CreditCard,
-  Smartphone,
-  DollarSign,
   Truck,
-  MapPin,
-  X,
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
