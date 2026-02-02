@@ -64,7 +64,7 @@ function Navbar() {
             <Mail size={14} /> support@techhub.co.ke
           </span>
           <span className="flex items-center gap-1">
-            <MapPin size={14} /> Nairobi, Kenya
+            <MapPin size={14} /> Nakuru, Kenya
           </span>
         </div>
       </div>

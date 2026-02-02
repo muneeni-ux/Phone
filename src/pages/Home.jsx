@@ -60,7 +60,7 @@ const HERO_SLIDES = [
     subtitle:
       "Powerful specs, sleek design, and unbeatable value. Upgrade today.",
     cta: "Shop Latest Phones",
-    ctaTo: "/shop",
+    ctaTo: "/oppo",
     image:
       "https://phones.co.ke/wp-content/uploads/2024/03/latest-xiaomi-phones-in-kenya.png", // Modern phone setup
     accent: "blue",
@@ -409,7 +409,7 @@ function Home() {
                 🔥 Hot Trending Offers
               </h3>
               <Link
-                to="/shop"
+                to="/oppo"
                 className="text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-1 transition"
               >
                 View All Deals <ArrowRight size={18} />
@@ -599,7 +599,7 @@ function Home() {
                 CURVED DISPLAYS
               </h3>
               <Link
-                to="/shop"
+                to="/oppo"
                 className="text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-1 transition"
               >
                 View All Deals <ArrowRight size={18} />
@@ -678,7 +678,7 @@ function Home() {
               </cite>
             </blockquote>
             <Link
-              to="/testimonials"
+              to="/more-reviews"
               className="inline-flex items-center gap-2 mt-4 text-blue-600 font-bold hover:text-blue-800 transition"
             >
               Read All Customer Reviews <ArrowRight size={18} />

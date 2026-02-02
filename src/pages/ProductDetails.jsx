@@ -171,7 +171,7 @@ const ProductDetails = () => {
             Product Not Found 😔
           </h2>
           <button
-            onClick={() => navigate("/shop")}
+            onClick={() => navigate("/")}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-semibold shadow-lg"
           >
             Back to Shop

@@ -86,7 +86,7 @@ function Footer() {
           <p className="mb-3">TECHHUB ships fast and reliably across Kenya.</p>
           <ul className="list-disc pl-5 space-y-2">
             <li>Processing time: 24–48 hours.</li>
-            <li>Delivery within Nairobi: Same day or next day.</li>
+            <li>Delivery within Nakuru: Same day or next day.</li>
             <li>Countrywide delivery: 1–4 days via trusted couriers.</li>
             <li>Free delivery for orders above <strong>Ksh 10,000</strong>.</li>
           </ul>
@@ -120,7 +120,7 @@ function Footer() {
             <div className="mt-6 space-y-2 text-gray-300 text-sm">
               <p className="flex items-center gap-2"><PhoneCall size={16} /> +254 712 345 678</p>
               <p className="flex items-center gap-2"><Mail size={16} /> support@techhub.co.ke</p>
-              <p className="flex items-center gap-2"><MapPin size={16} /> Nairobi, Kenya</p>
+              <p className="flex items-center gap-2"><MapPin size={16} /> Nakuru, Kenya</p>
             </div>
           </div>
 
