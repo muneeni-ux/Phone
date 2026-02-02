@@ -32,8 +32,7 @@ const allowedOrigins = [
   "http://localhost:3001",
   "http://192.168.59.151:3001", // For local network access
   "http://192.168.101.234:3000", // For local network access
-  "https://pakfashions.co.ke", // For production
-  "https://www.pakfashions.co.ke", // For production
+  "https://phone-fbjx.onrender.com", // Deployed frontend
 ];
 
 app.use(cors({
